@@ -1,0 +1,16 @@
+{
+  "name": "com.darktable.servicelocator",
+  "version": "1.0.0",
+  "displayName": "Service Locator",
+  "description": "Event-driven service locator",
+  "unity": "2021.3",
+  "keywords": [
+    "utilities"
+  ],
+  "author": {
+    "name": "Calvin Rien",
+    "email": "",
+    "url": ""
+  },
+  "type": "library"
+}
