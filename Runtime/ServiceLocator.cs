@@ -75,6 +75,7 @@ namespace com.darktable
                 return;
             }
 
+            // If the service is registered immediately notify the listener
             if (TryGetService<T>(out var service))
             {
                 serviceCallback.Invoke(service, true);
@@ -101,6 +102,13 @@ namespace com.darktable
             if (!k_RegisteredCallbacks.TryGetValue(serviceCallback, out var callbackWrapper))
             {
                 return;
+            }
+
+            // If the service is registered immediately notify the listener
+            if (TryGetService<T>(out var service))
+            {
+                // behave as if the service unregistered.
+                callbackWrapper.Invoke(service, false);
             }
 
             var type = typeof(T);
