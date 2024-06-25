@@ -11,6 +11,7 @@ namespace com.darktable
 
     public static class ServiceLocator
     {
+        public delegate void ServiceCallback<T>(T service, bool registered);
         private delegate void ServiceLocatorDelegate(IService service, bool registered);
 
         private static readonly Dictionary<Type, IService> k_Services = new();
@@ -55,7 +56,7 @@ namespace com.darktable
             return false;
         }
 
-        private static bool TryGetService<T>(out T result) where T : class, IService
+        public static bool TryGetService<T>(out T result) where T : class, IService
         {
             if (k_Services.TryGetValue(typeof(T), out var service))
             {
@@ -67,7 +68,7 @@ namespace com.darktable
             return false;
         }
 
-        public static void AddServiceListener<T>(Action<T, bool> serviceCallback) where T : class, IService
+        public static void AddServiceListener<T>(ServiceCallback<T> serviceCallback) where T : class, IService
         {
             if (k_RegisteredCallbacks.ContainsKey(serviceCallback))
             {
@@ -97,7 +98,7 @@ namespace com.darktable
             k_RegisteredCallbacks.Add(serviceCallback, callbackWrapper);
         }
 
-        public static void RemoveServiceListener<T>(Action<T, bool> serviceCallback) where T : class, IService
+        public static void RemoveServiceListener<T>(ServiceCallback<T> serviceCallback) where T : class, IService
         {
             if (!k_RegisteredCallbacks.TryGetValue(serviceCallback, out var callbackWrapper))
             {
