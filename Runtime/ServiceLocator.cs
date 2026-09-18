@@ -127,6 +127,20 @@ namespace com.darktable
             k_RegisteredCallbacks.Remove(serviceCallback);
         }
 
+        /// <summary>
+        /// Clears every registration before a play session begins.
+        /// </summary>
+        /// <remarks>
+        /// These dictionaries are static, so with Enter Play Mode's domain reload disabled they
+        /// survive from one play session to the next, still holding the DESTROYED services of the
+        /// previous one. The next session's first Register then loses to a dead instance and the
+        /// registrant destroys itself - which is silent apart from an "already registered" warning.
+        ///
+        /// SubsystemRegistration is the earliest runtime hook and runs on EVERY play session
+        /// whether or not the domain reloaded, so it lands before the first Awake in either case.
+        /// In a build the dictionaries are already empty here and this is a no-op.
+        /// </remarks>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         internal static void Reset()
         {
             k_Services.Clear();
